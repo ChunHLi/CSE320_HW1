@@ -18,19 +18,22 @@ typedef struct node {
 } node;
 
 typedef struct student_records{
+	node* head;
 } student_records;
 
-node* head = NULL;
+void initRecords(struct student_records *srs){
+	srs->head = NULL;
+}
 
 
 /*
  *	returns length of linked list
  */
 
-int length() {
+int length(student_records *srs) {
 	int length = 0;
 	node* current;
-	for (current=head; current != NULL; current=(node*)(current->next)){
+	for (current=srs->head; current != NULL; current=(node*)(current->next)){
 		length++;
 	}
 	return length;
@@ -40,15 +43,15 @@ int length() {
  *	starting from a given index, searches for a node that matches requi *      rement
  */
 
-node* findID(int start, int find_id){
-	if (start > length()){
+node* findID(int start, int find_id, student_records *srs){
+	if (start > length(srs)){
 		return NULL;
 	} else {
-		node* current = head;
+		node* current = srs->head;
 		for (int i=0; i<start; i++){
 			current = (node*)(current->next);
 		}
-		for (int i=start; i<length(); i++){
+		for (int i=start; i<length(srs); i++){
 			if (current->id == find_id){
 				return current;
 			}		
@@ -57,15 +60,15 @@ node* findID(int start, int find_id){
 	}
 }
 
-node* findName(int start, char* find_name){
-	if (start > length()){
+node* findName(int start, char* find_name, student_records *srs){
+	if (start > length(srs)){
 		return NULL;
 	} else {
-		node* current = head;
+		node* current = srs->head;
 		for (int i=0; i<start; i++){
 			current = (node*)(current->next);
 		}
-		for (int i=start; i<length(); i++){
+		for (int i=start; i<length(srs); i++){
 			if (current->last_name == find_name){
 				return current;
 			}		
@@ -74,15 +77,15 @@ node* findName(int start, char* find_name){
 	}
 }
 
-node* findMajor(int start, char* find_major){
-	if (start > length()){
+node* findMajor(int start, char* find_major, student_records *srs){
+	if (start > length(srs)){
 		return NULL;
 	} else {
-		node* current = head;
+		node* current = srs->head;
 		for (int i=0; i<start; i++){
 			current = (node*)(current->next);
 		}
-		for (int i=start; i<length(); i++){
+		for (int i=start; i<length(srs); i++){
 			if (current->major == find_major){
 				return current;
 			}		
@@ -105,10 +108,10 @@ node* findMajor(int start, char* find_major){
  *	then print error "STUDENT RECORD NOT FOUND"
  */
 
-void printList(int listType, int find_id, char* find_last_name, char* find_major){
+void printList(int listType, int find_id, char* find_last_name, char* find_major, student_records *srs){
 	node* current;
 	int count = 0;
-	for (current=head; current!=NULL; current=(node*)(current->next)){
+	for (current=srs->head; current!=NULL; current=(node*)(current->next)){
 		if (listType == 1){
 			printf("%d %s %s %.2f %s\n",current->id,current->first_name,current->last_name,current->gpa,current->major);
 			count = count + 1;
@@ -150,8 +153,8 @@ void printList(int listType, int find_id, char* find_last_name, char* find_major
  *	then print error "ID NOT UNIQUE"
  */
 
-void insertNode(int new_id, char* new_first_name, char* new_last_name, float new_gpa, char* new_major){
-	if (findID(0,new_id)!=NULL){
+void insertNode(int new_id, char* new_first_name, char* new_last_name, float new_gpa, char* new_major, student_records *srs){
+	if (findID(0,new_id,srs)!=NULL){
 		printf("ERROR: ID NOT UNIQUE\n");
 	} else {
 		node* link = (node*)malloc(sizeof(struct node));
@@ -161,12 +164,12 @@ void insertNode(int new_id, char* new_first_name, char* new_last_name, float new
 		link->gpa = new_gpa;
 		link->major = new_major;
 		node* previous=NULL;
-		node* current = head;
-		for (int i = 0; i < length(); i++){
+		node* current = srs->head;
+		for (int i = 0; i < length(srs); i++){
 			if (current->id > link->id){
 				if (i == 0){
-					link->next = head;
-					head = link;
+					link->next = srs->head;
+					srs->head = link;
 					link->index = 0;
 					node* tempLink = (node*)(link->next);
 					while (tempLink != NULL){
@@ -190,15 +193,15 @@ void insertNode(int new_id, char* new_first_name, char* new_last_name, float new
 			previous = current;
 			current = (node*)(current->next);
 		}
-		if (head==NULL){
-			head = link;
-			head->next = NULL;
-			head->index = 0;
+		if (srs->head==NULL){
+			srs->head = link;
+			srs->head->next = NULL;
+			srs->head->index = 0;
 		}
 		else if (current==NULL){
 			previous->next = link;
 			link->next = NULL;
-			link->index = length();
+			link->index = length(srs);
 		}
 	}	
 }
@@ -210,19 +213,19 @@ void insertNode(int new_id, char* new_first_name, char* new_last_name, float new
  *	then print error "STUDENT RECORD CANNOT BE DELETED NOR UPDATED" 
  */
 
-node* deleteNode(int id_to_delete) {
-	if (length()==0){
+node* deleteNode(int id_to_delete, student_records *srs) {
+	if (length(srs)==0){
 		printf("ERROR: STUDENT RECORD CANNOT BE DELETED NOR UPDATED");
 		return NULL;
 	}
-	if (head->id == id_to_delete){
-		node* temp = head;
-		head = (node*)(head->next);
-		return head;
+	if (srs->head->id == id_to_delete){
+		node* temp = srs->head;
+		srs->head = (node*)(srs->head->next);
+		return srs->head;
 	}
 	node* previous=NULL;
 	node* current;
-	for (current=head;current!=NULL;current=(node*)(current->next)){
+	for (current=srs->head;current!=NULL;current=(node*)(current->next)){
 		if (current->id == id_to_delete){
 			node* temp = current;
 			previous->next = (node*)(current->next);
@@ -235,18 +238,20 @@ node* deleteNode(int id_to_delete) {
 }
 
 int main(int argc, const char* argv[]){
-	insertNode(1,"Shawn","Li",3.7,"CSE");
-	printList(1,1,"Li","CSE");
-	insertNode(2,"Eli","Zhu",3.7,"EEC");	
-	printList(1,1,"Li","CSE");
-	insertNode(3,"Bhawanjot","Shergill",3.2,"EEC");	
-	printList(1,1,"Li","CSE");
-	insertNode(4,"Tanjeel","Murad",3.5,"BUS");
-	printList(1,1,"Li","CSE");
-	insertNode(6,"Justin","Han",3.4,"UDC");
-	printList(1,1,"Li","CSE");
-	insertNode(5,"Prabjhot","Shergill",3.6,"CSE");
-	printList(1,1,"Li","CSE");
-	printList(5,3,"Shergill","BUS");
+	struct student_records *srs = malloc(sizeof(struct student_records));
+	initRecords(srs);
+	insertNode(1,"Shawn","Li",3.7,"CSE",srs);
+	printList(1,1,"Li","CSE",srs);
+	insertNode(2,"Eli","Zhu",3.7,"EEC",srs);	
+	printList(1,1,"Li","CSE",srs);
+	insertNode(3,"Bhawanjot","Shergill",3.2,"EEC",srs);	
+	printList(1,1,"Li","CSE",srs);
+	insertNode(4,"Tanjeel","Murad",3.5,"BUS",srs);
+	printList(1,1,"Li","CSE",srs);
+	insertNode(6,"Justin","Han",3.4,"UDC",srs);
+	printList(1,1,"Li","CSE",srs);
+	insertNode(5,"Prabjhot","Shergill",3.6,"CSE",srs);
+	printList(1,1,"Li","CSE",srs);
+	printList(5,3,"Shergill","BUS",srs);
 }
 
