@@ -17,7 +17,11 @@ typedef struct node {
 	struct node* next;
 } node;
 
-node *head = NULL;
+typedef struct student_records{
+} student_records;
+
+node* head = NULL;
+
 
 /*
  *	returns length of linked list
