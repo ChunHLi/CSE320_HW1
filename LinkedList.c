@@ -94,16 +94,50 @@ node* findMajor(int start, char* find_major){
  *	1. all students
  *	2. match id
  *	3. match last_name
- sadasdczc*	4. match major
- *	5. match id and last_name
- *	6. match id and major
- *	7. match major and last_name
+ *	4. match major
+ *	5. match major and last_name
  *
  *	if list is empty or in other words, no student matches the flags,
  *	then print error "STUDENT RECORD NOT FOUND"
  */
 
-void printList(int listType){
+void printList(int listType, int find_id, char* find_last_name, char* find_major){
+	node* current;
+	int count = 0;
+	for (current=head; current!=NULL; current=(node*)(current->next)){
+		if (listType == 1){
+			printf("%d %s %s %.2f %s\n",current->id,current->first_name,current->last_name,current->gpa,current->major);
+			count = count + 1;
+		}
+		if (listType == 2){
+			if (current->id==find_id){
+				printf("%d %s %s %.2f %s\n",current->id,current->first_name,current->last_name,current->gpa,current->major);
+				count = count + 1;
+			}
+		}
+		if (listType == 3){
+			if (current->last_name==find_last_name){
+				printf("%d %s %s %.2f %s\n",current->id,current->first_name,current->last_name,current->gpa,current->major);		
+				count = count + 1;
+			}
+		}
+		if (listType == 4){
+			if (current->major==find_major){
+				printf("%d %s %s %.2f %s\n",current->id,current->first_name,current->last_name,current->gpa,current->major);
+				count = count + 1;
+			}
+		}
+		if (listType == 5){
+			if (current->last_name==find_last_name && current->major==find_major){
+				printf("%d %s %s %.2f %s\n",current->id,current->first_name,current->last_name,current->gpa,current->major);
+				count = count + 1;
+			}
+		}
+	}
+	if (count == 0){
+		printf("ERROR: STUDENT RECORD NOT FOUND");
+	}
+	printf("\n");
 }
 
 /*
@@ -198,19 +232,17 @@ node* deleteNode(int id_to_delete) {
 
 int main(int argc, const char* argv[]){
 	insertNode(1,"Shawn","Li",3.7,"CSE");
-	printf("%d\n",length());
-	insertNode(2,"Eli","Zhu",3.7,"EEC");
-	printf("%d\n",length());
-	insertNode(3,"Bhawanjot","Shergill",3.2,"EEC");
-	printf("%d\n",length());
-	deleteNode(2);
-	printf("%d\n",length());
-	deleteNode(1);
-	printf("%d\n",length());
-	deleteNode(3);
-	deleteNode(0);
-	printf("%d\n",length());
-	insertNode(1,"Shawn","Li",3.7,"CSE");
-	printf("%d\n",length());
+	printList(1,1,"Li","CSE");
+	insertNode(2,"Eli","Zhu",3.7,"EEC");	
+	printList(1,1,"Li","CSE");
+	insertNode(3,"Bhawanjot","Shergill",3.2,"EEC");	
+	printList(1,1,"Li","CSE");
+	insertNode(4,"Tanjeel","Murad",3.5,"BUS");
+	printList(1,1,"Li","CSE");
+	insertNode(6,"Justin","Han",3.4,"UDC");
+	printList(1,1,"Li","CSE");
+	insertNode(5,"Prabjhot","Shergill",3.6,"CSE");
+	printList(1,1,"Li","CSE");
+	printList(5,3,"Shergill","BUS");
 }
 
