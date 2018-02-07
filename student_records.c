@@ -237,7 +237,7 @@ node* deleteNode(int id_to_delete, student_records *srs) {
 	return NULL;
 }
 
-int main(int argc, const char* argv[]){
+/*int main(int argc, const char* argv[]){
 	struct student_records *srs = malloc(sizeof(struct student_records));
 	initRecords(srs);
 	insertNode(1,"Shawn","Li",3.7,"CSE",srs);
@@ -253,5 +253,5 @@ int main(int argc, const char* argv[]){
 	insertNode(5,"Prabjhot","Shergill",3.6,"CSE",srs);
 	printList(1,1,"Li","CSE",srs);
 	printList(5,3,"Shergill","BUS",srs);
-}
+}*/
 
