@@ -240,6 +240,11 @@ node* deleteNode(int id_to_delete, student_records *srs) {
 	return NULL;
 }
 
+void updateNode(int new_ID, char* new_first_name, char* new_last_name, float new_gpa, char* new_major, student_records *srs) {
+	deleteNode(new_ID, srs);
+	insertNode(new_ID, new_first_name, new_last_name, new_gpa, new_major, srs);
+}
+
 int main(int argc, char** argv) {
 	int c;
 	int vflag = 0;
@@ -297,6 +302,25 @@ int main(int argc, char** argv) {
 	} else if ((vflag && (iflag || fflag || mflag))||
 			(oflag && !(vflag || iflag || fflag || mflag))){
 		printf("OTHER ERROR\n");
+	} else {
+		FILE *stream;
+		char *line = NULL;
+		size_t len = 0;
+		ssize_t read;
+ 
+		stream = fopen(filename, "r");
+		if (stream == NULL){
+			printf("FAILED TO PARSE FILE");
+			exit(EXIT_FAILURE);
+ 		}
+		while ((read = getline(&line, &len, stream)) != -1) {
+			printf("Retrieved line of length %zu :\n", read);
+			printf("%s", line);
+		}
+ 
+		free(line);
+		fclose(stream);
+		exit(EXIT_SUCCESS);
 	}
   	return 0;
 }
