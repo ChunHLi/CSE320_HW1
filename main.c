@@ -56,10 +56,12 @@ node* findID(int start, int find_id, student_records *srs){
 		return NULL;
 	} else {
 		node* current = srs->head;
-		for (int i=0; i<start; i++){
+		int i = 0;
+		for (i=0; i<start; i++){
 			current = (node*)(current->next);
 		}
-		for (int i=start; i<length(srs); i++){
+		i = start;
+		for (i=start; i<length(srs); i++){
 			if (current->id == find_id){
 				return current;
 			}		
@@ -73,10 +75,12 @@ node* findName(int start, char* find_name, student_records *srs){
 		return NULL;
 	} else {
 		node* current = srs->head;
-		for (int i=0; i<start; i++){
+		int i = 0;
+		for (i=0; i<start; i++){
 			current = (node*)(current->next);
 		}
-		for (int i=start; i<length(srs); i++){
+		i = start;
+		for (i=start; i<length(srs); i++){
 			if (current->last_name == find_name){
 				return current;
 			}		
@@ -90,10 +94,12 @@ node* findMajor(int start, char* find_major, student_records *srs){
 		return NULL;
 	} else {
 		node* current = srs->head;
-		for (int i=0; i<start; i++){
+		int i = 0;
+		for (i=0; i<start; i++){
 			current = (node*)(current->next);
 		}
-		for (int i=start; i<length(srs); i++){
+		i = start;
+		for (i=start; i<length(srs); i++){
 			if (current->major == find_major){
 				return current;
 			}		
@@ -173,7 +179,8 @@ void insertNode(int new_id, char* new_first_name, char* new_last_name, float new
 		link->major = new_major;
 		node* previous=NULL;
 		node* current = srs->head;
-		for (int i = 0; i < length(srs); i++){
+		int i = 0;
+		for (i = 0; i < length(srs); i++){
 			if (current->id > link->id){
 				if (i == 0){
 					link->next = srs->head;
