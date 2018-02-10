@@ -4,6 +4,11 @@
 #include <ctype.h>
 #include <getopt.h>
 
+
+char* ADD = "ADD";
+char* DELETE = "DELETE";
+char* UPDATE = "UPDATE";
+
 /*
  *	nodes used to store data in linked lists
  */
@@ -145,7 +150,7 @@ void printList(int listType, int find_id, char* find_last_name, char* find_major
 		}
 	}
 	if (count == 0){
-		printf("ERROR: STUDENT RECORD NOT FOUND");
+		printf("STUDENT RECORD NOT FOUND\n");
 	}
 	printf("\n");
 }
@@ -158,7 +163,7 @@ void printList(int listType, int find_id, char* find_last_name, char* find_major
 
 void insertNode(int new_id, char* new_first_name, char* new_last_name, float new_gpa, char* new_major, student_records *srs){
 	if (findID(0,new_id,srs)!=NULL){
-		printf("ERROR: ID NOT UNIQUE\n");
+		printf("ID NOT UNIQUE\n");
 	} else {
 		node* link = (node*)malloc(sizeof(struct node));
 		link->id = new_id;
@@ -218,7 +223,7 @@ void insertNode(int new_id, char* new_first_name, char* new_last_name, float new
 
 node* deleteNode(int id_to_delete, student_records *srs) {
 	if (length(srs)==0){
-		printf("ERROR: STUDENT RECORD CANNOT BE DELETED NOR UPDATED");
+		printf("STUDENT RECORD CANNOT BE DELETED NOR UPDATED");
 		return NULL;
 	}
 	if (srs->head->id == id_to_delete){
@@ -236,7 +241,7 @@ node* deleteNode(int id_to_delete, student_records *srs) {
 		}
 		previous = current;
 	}
-	printf("ERROR: STUDENT RECORD CANNOT BE DELETED NOR UPDATED");
+	printf("STUDENT RECORD CANNOT BE DELETED NOR UPDATED\n");
 	return NULL;
 }
 
@@ -251,6 +256,23 @@ int lengthOfString(char* src){
 		counter += 1;
 	} counter += 1;
 	return counter;
+}
+
+int strEquals(char* str1, char* str2){
+	int counter = 0;
+	int len1 = lengthOfString(str1);
+	int len2 = lengthOfString(str2);
+	if (len1 != len2){
+		return 0;
+	} else {
+		while (counter < len1){
+			if (*(str1+counter) != *(str2+counter)){
+				return 0;
+			}
+			counter += 1;
+		}
+		return 1;
+	}
 }
 
 int lengthOfWord(char* src, int start){
@@ -339,11 +361,22 @@ int main(int argc, char** argv) {
  
 		stream = fopen(filename, "r");
 		if (stream == NULL){
-			printf("FAILED TO PARSE FILE");
+			printf("FAILED TO PARSE FILE\n");
 			exit(EXIT_FAILURE);
  		}
-		while ((read = getline(&line, &len, stream)) != -1) {
 		
+		while ((read = getline(&line, &len, stream)) != -1) {
+			int counter = 0;
+			char* function = nextWhitespace(line, &counter);
+			if (strEquals(function,ADD)){
+				printf("WORKING AS INTENDED: ADD\n");
+			} else if (strEquals(function,DELETE)){
+				printf("WORKING AS INTENDED: DELETE\n");
+			} else if (strEquals(function,UPDATE)){
+				printf("WORKING AS INTENDED: UPDATE");
+			} else {
+				printf("FAILED TO PARSE FILE\n");	
+			}		
 		}
  
 		free(line);
