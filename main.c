@@ -3,7 +3,8 @@
 #include <unistd.h>
 #include <ctype.h>
 #include <getopt.h>
-
+#include <sys/types.h>
+#include <sys/stat.h>
 
 char* ADD = "ADD";
 char* DELETE = "DELETE";
@@ -357,6 +358,27 @@ int main(int argc, char** argv) {
 			case 'o' :
 				output = optarg;
 				oflag++;
+				struct stat st;
+    				int result = stat(output, &st);
+    				if (result == 0) {
+					printf("File already exists...\n");
+					printf("Do you wish to override existing file?\n");
+					char ch = 0;
+					while (ch != 'y' && ch != 'n' && ch != 'Y' && ch != 'N'){
+						printf("Input 'y' or 'n':");
+						if (ch != 0) {
+							printf("%c is not a valid option",ch);
+						}
+						ch = getchar();
+						getchar();
+					} 
+					if (ch == 'y' || ch == 'Y') {
+						printf("%s was overwritten\n",output);
+					} else {
+						printf("%s was not overwritten\n", output);
+						exit(1);
+					}
+				}
 				break;
 			case 'f' :
 				lastname = optarg;
@@ -424,22 +446,24 @@ int main(int argc, char** argv) {
 		}
 		
 		if (oflag) {
-		
+			freopen (output,"w",stdout);	
+		}
+		if (vflag) {
+			printList(1,id,lastname,major,srs);
+		} else if (iflag) {
+			printList(2,id,lastname,major,srs);
+		} else if (mflag && fflag) {
+			printList(5,id,lastname,major,srs);
+		} else if (mflag) {
+			printList(4,id,lastname,major,srs);
+		} else if (fflag) {
+			printList(3,id,lastname,major,srs);
 		} else {
-			if (vflag) {
-				printList(1,id,lastname,major,srs);
-			} else if (iflag) {
-				printList(2,id,lastname,major,srs);
-			} else if (mflag && fflag) {
-				printList(5,id,lastname,major,srs);
-			} else if (mflag) {
-				printList(4,id,lastname,major,srs);
-			} else if (fflag) {
-				printList(3,id,lastname,major,srs);
-			} else {
-				printf("OTHER ERROR\n");
-				exit(1);
-			}
+			printf("OTHER ERROR\n");
+			exit(1);
+		}
+		if (oflag) {
+			fclose (stdout);
 		} 
 
 		free(line);
