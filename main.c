@@ -245,6 +245,35 @@ void updateNode(int new_ID, char* new_first_name, char* new_last_name, float new
 	insertNode(new_ID, new_first_name, new_last_name, new_gpa, new_major, srs);
 }
 
+int lengthOfString(char* src){
+	int counter = 0;
+	while (*(src+counter) != '\0'){
+		counter += 1;
+	} counter += 1;
+	return counter;
+}
+
+int lengthOfWord(char* src, int start){
+	int counter = 0;
+	while ((*(src+start+counter) != '\n') && (*(src+start+counter) != ' ') && (*(src+start+counter) != '\0')){
+		counter += 1;
+	}
+	counter += 1; /*for null terminator*/
+	return counter;
+}
+
+char* nextWhitespace(char* src, int *counter){
+	int strCounter = 0;
+	char* str = (char*)malloc(sizeof(lengthOfWord(src,*counter)));
+	while ((*(src+*counter) != '\n') && (*(src+*counter) != ' ') && (*(src+*counter) != '\0')){
+		*(str+strCounter) = *(src+*counter);
+		*counter += 1;
+		strCounter += 1;
+	}
+	*(str+strCounter) = '\0';
+	return str;
+}
+
 int main(int argc, char** argv) {
 	int c;
 	int vflag = 0;
@@ -314,8 +343,7 @@ int main(int argc, char** argv) {
 			exit(EXIT_FAILURE);
  		}
 		while ((read = getline(&line, &len, stream)) != -1) {
-			printf("Retrieved line of length %zu :\n", read);
-			printf("%s", line);
+		
 		}
  
 		free(line);
