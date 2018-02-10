@@ -157,6 +157,7 @@ void printList(int listType, int find_id, char* find_last_name, char* find_major
 	}
 	if (count == 0){
 		printf("STUDENT RECORD NOT FOUND\n");
+		exit(1);
 	}
 	printf("\n");
 }
@@ -170,6 +171,7 @@ void printList(int listType, int find_id, char* find_last_name, char* find_major
 void insertNode(int new_id, char* new_first_name, char* new_last_name, float new_gpa, char* new_major, student_records *srs){
 	if (findID(0,new_id,srs)!=NULL){
 		printf("ID NOT UNIQUE\n");
+		exit(1);
 	} else {
 		node* link = (node*)malloc(sizeof(struct node));
 		link->id = new_id;
@@ -231,6 +233,7 @@ void insertNode(int new_id, char* new_first_name, char* new_last_name, float new
 node* deleteNode(int id_to_delete, student_records *srs) {
 	if (length(srs)==0){
 		printf("STUDENT RECORD CANNOT BE DELETED NOR UPDATED");
+		exit(1);
 		return NULL;
 	}
 	if (srs->head->id == id_to_delete){
@@ -249,6 +252,7 @@ node* deleteNode(int id_to_delete, student_records *srs) {
 		previous = current;
 	}
 	printf("STUDENT RECORD CANNOT BE DELETED NOR UPDATED\n");
+	exit(1);
 	return NULL;
 }
 
@@ -293,7 +297,7 @@ int lengthOfWord(char* src, int start){
 
 char* nextWhitespace(char* src, int *counter){
 	int strCounter = 0;
-	char* str = (char*)malloc(sizeof(lengthOfWord(src,*counter)));
+	char* str = (char*)malloc(lengthOfWord(src,*counter));
 	while ((*(src+*counter) != '\n') && (*(src+*counter) != ' ') && (*(src+*counter) != '\0')){
 		*(str+strCounter) = *(src+*counter);
 		*counter += 1;
@@ -302,6 +306,31 @@ char* nextWhitespace(char* src, int *counter){
 	*(str+strCounter) = '\0';
 	return str;
 }
+
+char* nameFormat(char* src){
+	int counter = 0;
+	char* str = (char*)malloc(lengthOfWord(src,0));
+	*(str+0) = toupper(*(src+0));
+	counter += 1;
+	while ((*(src+counter) != '\n') && (*(src+counter) != ' ') && (*(src+counter) != '\0')){
+		*(str+counter) = tolower(*(src+counter));
+		counter += 1;
+	}
+	*(str+counter) = '\0';
+	return str;
+}
+
+char* capitalize(char* src){
+	int counter = 0;
+	char* str = (char*)malloc(lengthOfWord(src,0));
+	while ((*(src+counter) != '\n') && (*(src+counter) != ' ') && (*(src+counter) != '\0')){
+		*(str+counter) = toupper(*(src+counter));
+		counter += 1;
+	}
+	*(str+counter) = '\0';
+	return str;
+}
+
 
 int main(int argc, char** argv) {
 	int c;
@@ -319,7 +348,6 @@ int main(int argc, char** argv) {
 		exit(1);
 	} else {
 		filename = *(argv+1);
-                printf("%s\n",filename);
 	}
 	while ((c = getopt(argc,argv,"vo:f:i:m:"))!= -1){
 		switch (c) {
@@ -371,24 +399,45 @@ int main(int argc, char** argv) {
 			printf("FAILED TO PARSE FILE\n");
 			exit(EXIT_FAILURE);
  		}
-		
+		struct student_records *srs = malloc(sizeof(struct student_records));
+		initRecords(srs);
 		while ((read = getline(&line, &len, stream)) != -1) {
 			int counter = 0;
 			char* function = nextWhitespace(line, &counter);
-			if (strEquals(function,ADD)){
-				printf("WORKING AS INTENDED: ADD\n");
+			counter += 1;
+			if (strEquals(function,ADD) || strEquals(function,UPDATE)){
+				int id = atoi(nextWhitespace(line, &counter));
+				counter += 1;
+				char* first_name = nameFormat(nextWhitespace(line, &counter));
+				counter += 1;
+				char* last_name = nameFormat(nextWhitespace(line, &counter));
+				counter += 1;
+				double gpa = atof(nextWhitespace(line,&counter));
+				counter += 1;
+				char* major = capitalize(nextWhitespace(line,&counter));
+				if (strEquals(function,ADD)){
+					insertNode(id,first_name,last_name,gpa,major,srs);
+				} else {
+					updateNode(id,first_name,last_name,gpa,major,srs);	
+				}
+				//printList(1,id,last_name,major,srs);
 			} else if (strEquals(function,DELETE)){
-				printf("WORKING AS INTENDED: DELETE\n");
-			} else if (strEquals(function,UPDATE)){
-				printf("WORKING AS INTENDED: UPDATE");
+				int id = atoi(nextWhitespace(line, &counter));
+				deleteNode(id, srs);
 			} else {
-				printf("FAILED TO PARSE FILE\n");	
+				printf("FAILED TO PARSE FILE\n");
+				free(line);
+				fclose(stream);
+				exit(EXIT_SUCCESS);
 			}		
 		}
+		
+		
  
 		free(line);
 		fclose(stream);
 		exit(EXIT_SUCCESS);
+		
 	}
   	return 0;
 }

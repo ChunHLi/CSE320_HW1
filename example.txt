@@ -1,2 +1,3 @@
 ADD 3 john doe 3.43 AMS
-ADD 5 mary jane 3.87 ART
+ADD 3 mary jane 3.87 ART
+UPDATE 5 mary parker 2.90 ART
