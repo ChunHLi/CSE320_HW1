@@ -338,7 +338,7 @@ int main(int argc, char** argv) {
 	int oflag = 0;
 	char* output = NULL;
 	int iflag = 0;
-	char* id = NULL;
+	int id = 0;
 	int fflag = 0;
 	char* lastname = NULL;
 	int mflag = 0;
@@ -352,31 +352,23 @@ int main(int argc, char** argv) {
 	while ((c = getopt(argc,argv,"vo:f:i:m:"))!= -1){
 		switch (c) {
 			case 'v' :
-				/*printf("v\n");*/
 				vflag++;
 				break;
 			case 'o' :
-				/*printf("o\n");*/
 				output = optarg;
-				printf("%s\n",output);
 				oflag++;
 				break;
 			case 'f' :
-				/*printf("f\n");*/
 				lastname = optarg;
 				printf("%s\n",lastname);
 				fflag++;
 				break;
 			case 'i' :
-				/*printf("i\n");*/
-				id = optarg;
-				printf("%s\n",id);		
+				id = atoi(optarg);		
 				iflag++;
 				break;
 			case 'm' :
-				/*printf("m\n");*/
 				major = optarg;
-				printf("%s\n",major);
 				mflag++;
 				break;
 			default:
@@ -406,24 +398,23 @@ int main(int argc, char** argv) {
 			char* function = nextWhitespace(line, &counter);
 			counter += 1;
 			if (strEquals(function,ADD) || strEquals(function,UPDATE)){
-				int id = atoi(nextWhitespace(line, &counter));
+				int given_id = atoi(nextWhitespace(line, &counter));
 				counter += 1;
-				char* first_name = nameFormat(nextWhitespace(line, &counter));
+				char* given_first_name = nameFormat(nextWhitespace(line, &counter));
 				counter += 1;
-				char* last_name = nameFormat(nextWhitespace(line, &counter));
+				char* given_last_name = nameFormat(nextWhitespace(line, &counter));
 				counter += 1;
-				double gpa = atof(nextWhitespace(line,&counter));
+				double given_gpa = atof(nextWhitespace(line,&counter));
 				counter += 1;
-				char* major = capitalize(nextWhitespace(line,&counter));
+				char* given_major = capitalize(nextWhitespace(line,&counter));
 				if (strEquals(function,ADD)){
-					insertNode(id,first_name,last_name,gpa,major,srs);
+					insertNode(given_id,given_first_name,given_last_name,given_gpa,given_major,srs);
 				} else {
-					updateNode(id,first_name,last_name,gpa,major,srs);	
+					updateNode(given_id,given_first_name,given_last_name,given_gpa,given_major,srs);	
 				}
-				//printList(1,id,last_name,major,srs);
 			} else if (strEquals(function,DELETE)){
-				int id = atoi(nextWhitespace(line, &counter));
-				deleteNode(id, srs);
+				int given_id = atoi(nextWhitespace(line, &counter));
+				deleteNode(given_id, srs);
 			} else {
 				printf("FAILED TO PARSE FILE\n");
 				free(line);
@@ -432,8 +423,25 @@ int main(int argc, char** argv) {
 			}		
 		}
 		
+		if (oflag) {
 		
- 
+		} else {
+			if (vflag) {
+				printList(1,id,lastname,major,srs);
+			} else if (iflag) {
+				printList(2,id,lastname,major,srs);
+			} else if (mflag && fflag) {
+				printList(5,id,lastname,major,srs);
+			} else if (mflag) {
+				printList(4,id,lastname,major,srs);
+			} else if (fflag) {
+				printList(3,id,lastname,major,srs);
+			} else {
+				printf("OTHER ERROR\n");
+				exit(1);
+			}
+		} 
+
 		free(line);
 		fclose(stream);
 		exit(EXIT_SUCCESS);
