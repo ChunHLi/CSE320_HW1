@@ -65,7 +65,8 @@ node* findID(int start, int find_id, student_records *srs){
 		for (i=start; i<length(srs); i++){
 			if (current->id == find_id){
 				return current;
-			}		
+			}
+			current = (node*)(current->next);		
 		}	
 		return NULL;
 	}
@@ -84,7 +85,8 @@ node* findName(int start, char* find_name, student_records *srs){
 		for (i=start; i<length(srs); i++){
 			if (current->last_name == find_name){
 				return current;
-			}		
+			}
+			current = (node*)(current->next);			
 		}
 		return NULL;
 	}
@@ -103,7 +105,8 @@ node* findMajor(int start, char* find_major, student_records *srs){
 		for (i=start; i<length(srs); i++){
 			if (current->major == find_major){
 				return current;
-			}		
+			}
+					
 		}
 		return NULL;
 	}
@@ -160,7 +163,6 @@ void printList(int listType, int find_id, char* find_last_name, char* find_major
 		printf("STUDENT RECORD NOT FOUND\n");
 		exit(1);
 	}
-	printf("\n");
 }
 
 /*
@@ -311,9 +313,17 @@ char* nextWhitespace(char* src, int *counter){
 char* nameFormat(char* src){
 	int counter = 0;
 	char* str = (char*)malloc(lengthOfWord(src,0));
+	if (isalpha(*(src+0))==0){
+		printf("FAILED TO PARSE FILE\n");
+		exit(1);
+	}
 	*(str+0) = toupper(*(src+0));
 	counter += 1;
 	while ((*(src+counter) != '\n') && (*(src+counter) != ' ') && (*(src+counter) != '\0')){
+		if (isalpha(*(src+counter))==0){
+			printf("FAILED TO PARSE FILE\n");
+			exit(1);
+		}
 		*(str+counter) = tolower(*(src+counter));
 		counter += 1;
 	}
@@ -325,11 +335,37 @@ char* capitalize(char* src){
 	int counter = 0;
 	char* str = (char*)malloc(lengthOfWord(src,0));
 	while ((*(src+counter) != '\n') && (*(src+counter) != ' ') && (*(src+counter) != '\0')){
+		if (isalpha(*(src+counter))==0){
+			printf("FAILED TO PARSE FILE\n");
+			exit(1);
+		}
 		*(str+counter) = toupper(*(src+counter));
 		counter += 1;
 	}
 	*(str+counter) = '\0';
 	return str;
+}
+
+int allDigit(char* src){
+	int counter = 0;
+	while ( (*(src+counter) != '\n') && (*(src+counter) != ' ') && (*(src+counter)!='\0')){
+		if ((isdigit(*(src+counter))==0)){
+			return 0;
+		}
+		counter += 1;	
+	}
+	return 1;
+}
+
+int allDigitF(char* src){
+	int counter = 0;
+	while ( (*(src+counter) != '\n') && (*(src+counter) != ' ') && (*(src+counter)!='\0')){
+		if ((isdigit(*(src+counter))==0)&&(*(src+counter)!='.')){
+			return 0;
+		}
+		counter += 1;	
+	}
+	return 1;
 }
 
 
@@ -420,13 +456,23 @@ int main(int argc, char** argv) {
 			char* function = nextWhitespace(line, &counter);
 			counter += 1;
 			if (strEquals(function,ADD) || strEquals(function,UPDATE)){
-				int given_id = atoi(nextWhitespace(line, &counter));
+				char* str_given_id = nextWhitespace(line, &counter);
+				if (!allDigit(str_given_id)){
+					printf("FAILED TO PARSE FILE\n");
+					exit(1);
+				}
+				int given_id = atoi(str_given_id);
 				counter += 1;
 				char* given_first_name = nameFormat(nextWhitespace(line, &counter));
 				counter += 1;
 				char* given_last_name = nameFormat(nextWhitespace(line, &counter));
 				counter += 1;
-				double given_gpa = atof(nextWhitespace(line,&counter));
+				char* str_given_gpa = nextWhitespace(line,&counter);
+				if (!allDigitF(str_given_gpa)){
+					printf("FAILED TO PARSE FILE\n");
+					exit(1);
+				}
+				double given_gpa = atof(str_given_gpa);
 				counter += 1;
 				char* given_major = capitalize(nextWhitespace(line,&counter));
 				if (strEquals(function,ADD)){
