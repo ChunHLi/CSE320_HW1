@@ -113,6 +113,109 @@ node* findMajor(int start, char* find_major, student_records *srs){
 }
 
 
+int lengthOfString(char* src){
+	int counter = 0;
+	while (*(src+counter) != '\0'){
+		counter += 1;
+	} counter += 1;
+	return counter;
+}
+
+int strEquals(char* str1, char* str2){
+	int counter = 0;
+	int len1 = lengthOfString(str1);
+	int len2 = lengthOfString(str2);
+	if (len1 != len2){
+		return 0;
+	} else {
+		while (counter < len1){
+			if (*(str1+counter) != *(str2+counter)){
+				return 0;
+			}
+			counter += 1;
+		}
+		return 1;
+	}
+}
+
+int lengthOfWord(char* src, int start){
+	int counter = 0;
+	while ((*(src+start+counter) != '\n') && (*(src+start+counter) != ' ') && (*(src+start+counter) != '\0')){
+		counter += 1;
+	}
+	counter += 1; /*for null terminator*/
+	return counter;
+}
+
+char* nextWhitespace(char* src, int *counter){
+	int strCounter = 0;
+	char* str = (char*)malloc(lengthOfWord(src,*counter));
+	while ((*(src+*counter) != '\n') && (*(src+*counter) != ' ') && (*(src+*counter) != '\0')){
+		*(str+strCounter) = *(src+*counter);
+		*counter += 1;
+		strCounter += 1;
+	}
+	*(str+strCounter) = '\0';
+	return str;
+}
+
+char* nameFormat(char* src){
+	int counter = 0;
+	char* str = (char*)malloc(lengthOfWord(src,0));
+	if (isalpha(*(src+0))==0){
+		printf("FAILED TO PARSE FILE\n");
+		exit(1);
+	}
+	*(str+0) = toupper(*(src+0));
+	counter += 1;
+	while ((*(src+counter) != '\n') && (*(src+counter) != ' ') && (*(src+counter) != '\0')){
+		if (isalpha(*(src+counter))==0){
+			printf("FAILED TO PARSE FILE\n");
+			exit(1);
+		}
+		*(str+counter) = tolower(*(src+counter));
+		counter += 1;
+	}
+	*(str+counter) = '\0';
+	return str;
+}
+
+char* capitalize(char* src){
+	int counter = 0;
+	char* str = (char*)malloc(lengthOfWord(src,0));
+	while ((*(src+counter) != '\n') && (*(src+counter) != ' ') && (*(src+counter) != '\0')){
+		if (isalpha(*(src+counter))==0){
+			printf("FAILED TO PARSE FILE\n");
+			exit(1);
+		}
+		*(str+counter) = toupper(*(src+counter));
+		counter += 1;
+	}
+	*(str+counter) = '\0';
+	return str;
+}
+
+int allDigit(char* src){
+	int counter = 0;
+	while ( (*(src+counter) != '\n') && (*(src+counter) != ' ') && (*(src+counter)!='\0')){
+		if ((isdigit(*(src+counter))==0)){
+			return 0;
+		}
+		counter += 1;	
+	}
+	return 1;
+}
+
+int allDigitF(char* src){
+	int counter = 0;
+	while ( (*(src+counter) != '\n') && (*(src+counter) != ' ') && (*(src+counter)!='\0')){
+		if ((isdigit(*(src+counter))==0)&&(*(src+counter)!='.')){
+			return 0;
+		}
+		counter += 1;	
+	}
+	return 1;
+}
 
 /*
  	ways to print list:
@@ -141,19 +244,19 @@ void printList(int listType, int find_id, char* find_last_name, char* find_major
 			}
 		}
 		if (listType == 3){
-			if (current->last_name==find_last_name){
+			if (strEquals(current->last_name,find_last_name)){
 				printf("%d %s %s %.2f %s\n",current->id,current->first_name,current->last_name,current->gpa,current->major);		
 				count = count + 1;
 			}
 		}
 		if (listType == 4){
-			if (current->major==find_major){
+			if (strEquals(current->major,find_major)){
 				printf("%d %s %s %.2f %s\n",current->id,current->first_name,current->last_name,current->gpa,current->major);
 				count = count + 1;
 			}
 		}
 		if (listType == 5){
-			if (current->last_name==find_last_name && current->major==find_major){
+			if (strEquals(current->last_name,find_last_name) && strEquals(current->major,find_major)){
 				printf("%d %s %s %.2f %s\n",current->id,current->first_name,current->last_name,current->gpa,current->major);
 				count = count + 1;
 			}
@@ -264,109 +367,6 @@ void updateNode(int new_ID, char* new_first_name, char* new_last_name, float new
 	insertNode(new_ID, new_first_name, new_last_name, new_gpa, new_major, srs);
 }
 
-int lengthOfString(char* src){
-	int counter = 0;
-	while (*(src+counter) != '\0'){
-		counter += 1;
-	} counter += 1;
-	return counter;
-}
-
-int strEquals(char* str1, char* str2){
-	int counter = 0;
-	int len1 = lengthOfString(str1);
-	int len2 = lengthOfString(str2);
-	if (len1 != len2){
-		return 0;
-	} else {
-		while (counter < len1){
-			if (*(str1+counter) != *(str2+counter)){
-				return 0;
-			}
-			counter += 1;
-		}
-		return 1;
-	}
-}
-
-int lengthOfWord(char* src, int start){
-	int counter = 0;
-	while ((*(src+start+counter) != '\n') && (*(src+start+counter) != ' ') && (*(src+start+counter) != '\0')){
-		counter += 1;
-	}
-	counter += 1; /*for null terminator*/
-	return counter;
-}
-
-char* nextWhitespace(char* src, int *counter){
-	int strCounter = 0;
-	char* str = (char*)malloc(lengthOfWord(src,*counter));
-	while ((*(src+*counter) != '\n') && (*(src+*counter) != ' ') && (*(src+*counter) != '\0')){
-		*(str+strCounter) = *(src+*counter);
-		*counter += 1;
-		strCounter += 1;
-	}
-	*(str+strCounter) = '\0';
-	return str;
-}
-
-char* nameFormat(char* src){
-	int counter = 0;
-	char* str = (char*)malloc(lengthOfWord(src,0));
-	if (isalpha(*(src+0))==0){
-		printf("FAILED TO PARSE FILE\n");
-		exit(1);
-	}
-	*(str+0) = toupper(*(src+0));
-	counter += 1;
-	while ((*(src+counter) != '\n') && (*(src+counter) != ' ') && (*(src+counter) != '\0')){
-		if (isalpha(*(src+counter))==0){
-			printf("FAILED TO PARSE FILE\n");
-			exit(1);
-		}
-		*(str+counter) = tolower(*(src+counter));
-		counter += 1;
-	}
-	*(str+counter) = '\0';
-	return str;
-}
-
-char* capitalize(char* src){
-	int counter = 0;
-	char* str = (char*)malloc(lengthOfWord(src,0));
-	while ((*(src+counter) != '\n') && (*(src+counter) != ' ') && (*(src+counter) != '\0')){
-		if (isalpha(*(src+counter))==0){
-			printf("FAILED TO PARSE FILE\n");
-			exit(1);
-		}
-		*(str+counter) = toupper(*(src+counter));
-		counter += 1;
-	}
-	*(str+counter) = '\0';
-	return str;
-}
-
-int allDigit(char* src){
-	int counter = 0;
-	while ( (*(src+counter) != '\n') && (*(src+counter) != ' ') && (*(src+counter)!='\0')){
-		if ((isdigit(*(src+counter))==0)){
-			return 0;
-		}
-		counter += 1;	
-	}
-	return 1;
-}
-
-int allDigitF(char* src){
-	int counter = 0;
-	while ( (*(src+counter) != '\n') && (*(src+counter) != ' ') && (*(src+counter)!='\0')){
-		if ((isdigit(*(src+counter))==0)&&(*(src+counter)!='.')){
-			return 0;
-		}
-		counter += 1;	
-	}
-	return 1;
-}
 
 
 int main(int argc, char** argv) {
@@ -418,7 +418,6 @@ int main(int argc, char** argv) {
 				break;
 			case 'f' :
 				lastname = optarg;
-				printf("%s\n",lastname);
 				fflag++;
 				break;
 			case 'i' :
