@@ -437,7 +437,7 @@ int main(int argc, char** argv) {
 				fflag++;
 				break;
 			case 'i' :
-				if (allAlpha(optarg)==0){
+				if (allDigit(optarg)==0){
 					printf("OTHER ERROR\n");
 					exit(1);
 				}
