@@ -217,6 +217,17 @@ int allDigitF(char* src){
 	return 1;
 }
 
+int allAlpha(char* src){
+	int counter = 0;
+	while ( (*(src+counter) != '\n') && (*(src+counter) != ' ') && (*(src+counter)!='\0')){
+		if ((isalpha(*(src+counter))==0)){
+			return 0;
+		}
+		counter += 1;	
+	}
+	return 1;
+}
+
 /*
  	ways to print list:
  *	1. all students
@@ -419,14 +430,26 @@ int main(int argc, char** argv) {
 				break;
 			case 'f' :
 				lastname = optarg;
+				if (allAlpha(lastname)==0){
+					printf("OTHER ERROR\n");
+					exit(1);
+				}
 				fflag++;
 				break;
 			case 'i' :
+				if (allAlpha(optarg)==0){
+					printf("OTHER ERROR\n");
+					exit(1);
+				}
 				id = atoi(optarg);		
 				iflag++;
 				break;
 			case 'm' :
 				major = optarg;
+				if (allAlpha(major)==0){
+					printf("OTHER ERROR\n");
+					exit(1);
+				}
 				mflag++;
 				break;
 			default:
