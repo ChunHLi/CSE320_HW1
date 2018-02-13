@@ -382,7 +382,7 @@ int main(int argc, char** argv) {
 	char* major = NULL;
 	char* filename = NULL;
 	if (argc < 3){
-		printf("NO QUERY PROVIDE\n");
+		printf("NO QUERY PROVIDED\n");
 		exit(1);
 	} else {
 		filename = *(argv+1);
